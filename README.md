@@ -115,7 +115,7 @@ const int ledPin = 2;
 ``` cpp
 WiFiClient client;
 ```
-Membuat objek client yang digunakan untuk koneksi HTTP dengan server ThingSpeak.
+- Membuat objek client yang digunakan untuk koneksi HTTP dengan server ThingSpeak.
 
 ### Setup Awal
 ```cpp
@@ -131,11 +131,79 @@ void setup() {
 }
 ```
 
-Serial.begin(9600) → memulai komunikasi serial untuk debugging.
+- Serial.begin(9600) → memulai komunikasi serial untuk debugging.
+- pinMode(...) → atur pin sensor dan LED sebagai input/output.
+- WiFi.mode(WIFI_STA) → mengaktifkan mode station (ESP32 jadi client WiFi).
+- ThingSpeak.begin(client) → inisialisasi koneksi ke ThingSpeak.
 
-pinMode(...) → atur pin sensor dan LED sebagai input/output.
+### Loop Utama - Koneksi WiFi
+```cpp
+if (WiFi.status() != WL_CONNECTED) {
+  Serial.print("Mencoba terhubung ke SSID: ");
+  Serial.println(ssid);
+  while (WiFi.status() != WL_CONNECTED) {
+    WiFi.begin(ssid, pass);
+    Serial.print(".");
+    delay(5000);
+  }
+  Serial.println("\nTerhubung ke WiFi.");
+}
+```
+- Mengecek status koneksi WiFi.
+- Jika belum terhubung, ESP32 akan mencoba menyambungkan ke jaringan dengan WiFi.begin().
+- Status ditampilkan di Serial Monitor.
 
-WiFi.mode(WIFI_STA) → mengaktifkan mode station (ESP32 jadi client WiFi).
+### Membaca Sensor Ultrasonik
+```cpp
+long duration;
+float distance;
 
-ThingSpeak.begin(client) → inisialisasi koneksi ke ThingSpeak.
+digitalWrite(trigPin, LOW);
+delayMicroseconds(2);
+digitalWrite(trigPin, HIGH);
+delayMicroseconds(10);
+digitalWrite(trigPin, LOW);
+
+duration = pulseIn(echoPin, HIGH, 30000);
+distance = duration * 0.03421 / 2;
+```
+Bagian ini mengaktifkan sensor ultrasonik dengan memberi pulsa singkat pada pin TRIG, lalu membaca pantulan sinyal lewat pin ECHO. Waktu pantulan disimpan dalam variabel duration, kemudian dikonversi menjadi jarak dalam satuan sentimeter menggunakan rumus distance = duration * 0.03421 / 2.
+
+### Kondisi Jika Objek Terdeteksi
+```cpp
+if (distance < 10 && distance > 0) {
+  Serial.print("Jarak: ");
+  Serial.print(distance);
+  Serial.println(" cm");
+  digitalWrite(ledPin, HIGH);
+  Serial.println("Objek terdeteksi! Mengirim data ke ThingSpeak...");
+
+  int httpCode = ThingSpeak.writeField(myChannelNumber, 1, distance, myWriteAPIKey);
+
+  if (httpCode == 200) {
+    Serial.println("Channel berhasil diupdate.");
+  } else {
+    Serial.println("Gagal update channel. Kode eror HTTP: " + String(httpCode));
+  }
+
+  delay(10000); 
+}
+```
+Jika jarak objek kurang dari 10 cm, maka jarak ditampilkan di Serial Monitor, LED menyala, dan data dikirim ke ThingSpeak. Jika update berhasil akan muncul pesan sukses, jika gagal ditampilkan kode error. Setelah itu ada jeda 10 detik sebelum pembacaan berikutnya.
+
+### Kondisi Jika Tidak Ada Objek
+```cpp
+else {
+  digitalWrite(ledPin, LOW);
+  Serial.println("Tidak ada objek dekat. Tidak mengirim data.");
+}
+  
+Serial.println("------------------------------------");
+
+delay(1000); 
+```
+Jika jarak lebih dari 10 cm atau tidak terdeteksi, LED dimatikan dan pesan ditampilkan bahwa tidak ada objek. Data tidak dikirim ke ThingSpeak, lalu program menunggu 1 detik sebelum mengulangi pengukuran.
+
+
+## Dokumentasi 
 
