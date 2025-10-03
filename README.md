@@ -2,7 +2,7 @@
 
 ## 📌 Informasi Umum
 **Judul Proyek: Mengukur Jarak dengan ESP32**
-**Anggota Tim:**  
+**Anggota:**  
 | Nama                      | NRP        |
 | --------------------------| ---------- |
 | Ica Zika Hamizah          | 5027241058 |
@@ -35,43 +35,40 @@
 ---
 
 ## 📐 Diagram Sistem
-Tambahkan diagram alur atau arsitektur sistem IoT. Bisa berupa flowchart atau diagram blok.  
 ```text
-Sensor → Microcontroller → Cloud → Dashboard
-```
     +-----------+
     |  Sensor   |
     | HC-SR04   |
     +-----+-----+
           |
           v
-+-----------------+
-| Microcontroller |
-|      ESP32      |
-+-----------------+
-|  - Baca sensor  |
-|  - Proses data  |
-|  - Kontrol LED  |
-+--------+--------+
-         |
-         v
-  +--------------+
-  |  Internet    |
-  |   (WiFi)     |
-  +------+-------+
-         |
-         v
-   +------------+
-   | ThingSpeak |
-   |  Channel   |
-   +------------+
-         |
-         v
-   +-------------+
-   | Dashboard   |
-   | (Grafik /   |
-   |  Monitoring)|
-   +-------------+
+ +-----------------+
+ | Microcontroller |
+ |      ESP32      |
+ +-----------------+
+ |  - Baca sensor  |
+ |  - Proses data  |
+ |  - Kontrol LED  |
+ +--------+--------+
+          |
+          v
+   +--------------+
+   |  Internet    |
+   |   (WiFi)     |
+   +------+-------+
+          |
+          v
+    +------------+
+    | ThingSpeak |
+    |  Channel   |
+    +------------+
+          |
+          v
+    +-------------+
+    | Dashboard   |
+    | (Grafik /   |
+    |  Monitoring)|
+    +-------------+
 ```
 ### 💡 Penjelasan Alur Data
 1. **HC-SR04** mengukur jarak dan mengirim data ke ESP32.  
@@ -79,3 +76,5 @@ Sensor → Microcontroller → Cloud → Dashboard
 3. ESP32 mengirim data ke **ThingSpeak** melalui WiFi (HTTP POST/MQTT).  
 4. **ThingSpeak Channel** menyimpan data sensor.  
 5. **Dashboard ThingSpeak** menampilkan data real-time dalam bentuk grafik.  
+
+## [gambar] Penjelasan Code
