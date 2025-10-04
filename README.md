@@ -207,3 +207,23 @@ Jika jarak lebih dari 10 cm atau tidak terdeteksi, LED dimatikan dan pesan ditam
 
 ## Dokumentasi 
 
+### Keadaan saat semua sudah tersambung
+Penugasan mengukur jarak dengan ESP32 dirakit pada trainer board IoT ESP32. Komponen utama yang digunakan adalah:
+
+- ESP32 DEVKIT V1: Berfungsi sebagai mikrokontroler utama yang menjalankan logika program, membaca sensor, mengontrol aktuator, dan terhubung ke internet (WiFi).
+- Sensor Ultrasonik (HC-SR04): Digunakan untuk mengukur jarak objek dengan prinsip pantulan gelombang suara. Sensor ini mengirimkan data duration (waktu tempuh) ke ESP32.
+- LED: Berfungsi sebagai indikator visual yang akan menyala ketika objek terdeteksi pada jarak kurang dari 10 cm.
+
+![alt text](Image/image_1.jpeg)
+![alt text](Image/image_2.jpeg)
+
+### Keadaan saat ada objek didekat sensor
+Ketika ada objek dekat, sensor ini akan menyalakan lampu (LED) sebagai indikasi lokal dan mencoba mengirimkan data jarak objek tersebut ke internet (ThingSpeak) untuk pemantauan jarak jauh.
+
+![alt text](Image/image_3.jpeg)
+
+### Keadaan hasil deteksi sensor
+Menampilkan data jarak yang berhasil dikirimkan ke channel ThingSpeak. Grafik ini memvisualisasikan data real-time yang telah lolos validasi (jarak <10 cm).
+
+![alt text](Image/iamge_4.jpeg)
+![alt text](Image/image_5.jpeg)
